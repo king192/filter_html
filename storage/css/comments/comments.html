@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+	<meta charset="utf-8">
+	<title>评论</title>
+</head>
+<body>
+<link rel="stylesheet" type="text/css" href="comments.css">
+<form action="{:U('posts')}" class="posts J_ajaxForm" id="posts">
+    <div id="box" class="container stage-publisher">
+        <header class="module-topbar" id="boxId_1464665208173_1" style="position: fixed;"> <a class="fl txt-link" href="javascript:history.go(-1);" data-node="back" title="取消" data-act-type="hover">取消</a> <a class="fr txt-link disable J_ajax_submit_btn" href="javascript:;" data-node="send" title="发送" data-act-type="hover">发送</a>
+            <div class="title-group">
+                <h1 class="title txt-cut">发评论</h1>
+                <h2 class="sub-title">king2092</h2></div>
+        </header>
+        <style type="text/css">
+        	.txt-title{display: block;border:1px solid #eee;}
+        	.txt-title input{width: 100%;outline: none;border:none;height: 30px;padding: 0 12px;font-size: 16px;}
+        </style>
+        <article class="module-publisher" id="boxId_1464665208173_2">
+            <div class="txt-publisher-wrapper">
+                <textarea id="txt-publisher" name="content" class="J-textarea txt-publisher" placeholder="评论内容..."></textarea>
+            </div>
+            <section class="action-publisher layout-box line-bottom">
+                <div class="box-col" style="position:relative;"><span class="iconf iconf_compose_picture"></span>
+                    <input class="picupload" name="fileselect[]" type="file" accept="image/*">
+                </div>
+                <div class="box-col"><span class="iconf iconf_compose_mention"></span></div>
+                <div class="box-col"><span class="iconf iconf_compose_trend"></span></div>
+                <div class="box-col"><span class="iconf emotion iconf_compose_emoticon"></span></div>
+                <div class="box-col">
+                    <a class="iconf iconf_compose_longweibo" href="http://m.weibo.cn/mblog/longMblog"></a>
+                </div>
+            </section>
+        </article>
+        <div id="boxId_1464665208173_3"></div>
+    </div>
+</form>
+
+</body>
+</html>

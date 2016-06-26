@@ -1,0 +1,826 @@
+
+<!doctype html>
+<html ng-app="myapp" ng-controller="marketCenterCtrl">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>行情中心</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <script type="text/javascript" src="/Public/wzwh/zixun/js/pace.min.js"></script>
+    <link rel="stylesheet" href="/Public/wzwh/zixun/css/amazeui.css">
+    <link rel="stylesheet" href="/Public/wzwh/zixun/css/iconfont-v2.css">
+    <link rel="stylesheet" href="/Public/wzwh/zixun/css/stock.css">
+    <link rel="stylesheet" href="/Public/wzwh/zixun/css/app.css">
+    <script type="text/javascript">
+        //百度检测
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?f44b52b7385300d28662a8bcb206b2fb";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+<body>
+<div id="overflow"></div>
+<div class="outer">
+    <!--  子栏目导航  -->
+    <header data-am-widget="header" class="am-header am-header-xsber">
+        <ul class="am-nav  am-nav-justify">
+            <li class="am-active"><a href="stock.html"><span>行情分析</span></a></li>
+            <li><a href="stock-directIssueList.html"><span>定增提示</span></a></li>
+            <li><a href="stock-makeMarketList.html"><span>做市提示</span></a></li>
+            <li><a href="stock-listingList.html"><span>挂牌提示</span></a></li>
+        </ul>
+    </header>
+    <!--  滚动刷新区域  -->
+    <div class="inner" >
+
+
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-danger icon-Statistic-solid "></i> 三板成分指数</h2>
+                <span class="am-fr am-text-xs am-date-text"><i class="am-icon-clock-o"></i> {{neeqIndexes.SanbanCz.Tdate}}</span>
+            </div>
+            <div class="am-padding-sm">
+            <ul class="am-avg-sm-4 boxes am-stock-boxes">
+                <li class="box box-1"><span class="am-stock-status status_title">最新</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanCz.Close"></span></li>
+                <li class="box box-2"><span class="am-stock-status status_title">最高</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanCz.Zgcj"></span></li>
+                <li class="box box-3"><span class="am-stock-status status_title" ng-class="{'am-text-danger':neeqIndexes.SanbanCz.Chang > 0, 'am-text-success':neeqIndexes.SanbanCz.Chang < 0}">涨跌额</span>
+                    <span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanCz.Chang"  ng-class="{'am-text-danger':neeqIndexes.SanbanCz.Chang > 0, 'am-text-success':neeqIndexes.SanbanCz.Chang < 0}"></span></li>
+                <li class="box box-4" ng-bind-html="neeqIndexes.SanbanCz.Cjsl | uniqueCurrency:'成交量'"></li>
+
+                <li class="box box-5"><span class="am-stock-status status_title">开盘</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanCz.Jrkp"></span></li>
+                <li class="box box-6"><span class="am-stock-status status_title">最低</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanCz.Zdcj"></span></li>
+                <li class="box box-7"><span class="am-stock-status status_title" ng-class="{'am-text-danger':neeqIndexes.SanbanCz.Chang > 0, 'am-text-success':neeqIndexes.SanbanCz.Chang < 0}">涨跌幅(%)</span>
+                    <span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanCz.Pctchange" ng-class="{'am-text-danger':neeqIndexes.SanbanCz.Chang > 0, 'am-text-success':neeqIndexes.SanbanCz.Chang < 0}"></span></li>
+                <li class="box box-8" ng-bind-html="neeqIndexes.SanbanCz.Cjje | uniqueCurrency:'成交额'"></li>
+            </ul>
+
+            </div>
+            <div class="am-block-10"></div>
+            <div class="am-padding-sm">
+                <div id="echatBoxSzcf" class="am-stock-echart-box"></div>
+            </div>
+        </div>
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-warning icon-Statistic-solid "></i> 三板做市指数</h2>
+                <span class="am-fr am-text-xs am-date-text"><i class="am-icon-clock-o"></i> {{neeqIndexes.SanbanZs.Tdate}}</span>
+            </div>
+            <div class="am-padding-sm">
+                <ul class="am-avg-sm-4 boxes am-stock-boxes">
+                    <li class="box box-1"><span class="am-stock-status status_title">最新</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanZs.Close"></span></li>
+                    <li class="box box-2"><span class="am-stock-status status_title">最高</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanZs.Zgcj"></span></li>
+                    <li class="box box-3"><span class="am-stock-status status_title" ng-class="{'am-text-danger':neeqIndexes.SanbanZs.Chang > 0, 'am-text-success':neeqIndexes.SanbanZs.Chang < 0}">涨跌额</span>
+                        <span class="am-stock-status status_text am-text-success" ng-bind="neeqIndexes.SanbanZs.Chang" ng-class="{'am-text-danger':neeqIndexes.SanbanZs.Chang > 0, 'am-text-success':neeqIndexes.SanbanZs.Chang < 0}"></span></li>
+                    <li class="box box-4" ng-bind-html="neeqIndexes.SanbanZs.Cjsl | uniqueCurrency:'成交量'"></li>
+
+                    <li class="box box-5"><span class="am-stock-status status_title">开盘</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanZs.Jrkp"></span></li>
+                    <li class="box box-6"><span class="am-stock-status status_title">最低</span><span class="am-stock-status status_text" ng-bind="neeqIndexes.SanbanZs.Zdcj"></span></li>
+                    <li class="box box-7"><span class="am-stock-status status_title" ng-class="{'am-text-danger':neeqIndexes.SanbanZs.Chang > 0, 'am-text-success':neeqIndexes.SanbanZs.Chang < 0}">涨跌幅(%)</span>
+                        <span class="am-stock-status status_text am-text-success" ng-bind="neeqIndexes.SanbanZs.Pctchange" ng-class="{'am-text-danger':neeqIndexes.SanbanZs.Chang > 0, 'am-text-success':neeqIndexes.SanbanZs.Chang < 0}"></span></li>
+                    <li class="box box-8" ng-bind-html="neeqIndexes.SanbanZs.Cjje | uniqueCurrency:'成交额'"></li>
+                </ul>
+            </div>
+            <div class="am-block-10"></div>
+            <div class="am-padding-s">
+                <div id="echatBoxMarket" class="am-stock-echart-box"></div>
+            </div>
+
+        </div>
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-primary icon-business-center-3-solid "></i> 三板挂牌企业</h2>
+                <span class="am-fr am-text-xs am-date-text" id="listing-date"><i class="am-icon-clock-o"> </i></span>
+            </div>
+            <div class="am-padding-sm">
+                    <ul class="am-avg-sm-3 boxes am-stock-vbox-list ">
+                        <li class="box box-1"><span class="am-stock-status status_text am-text-danger" id="listing-total">0</span> <span class="am-stock-status status_title">总挂牌</span></li>
+                        <li class="box box-2"><span class="am-stock-status status_text am-text-secondary" id="listing-make_market">0</span> <span class="am-stock-status status_title">做市转让</span></li>
+                        <li class="box box-3"><span class="am-stock-status status_text am-text-success" id="listing-negotiating_transfer">0</span> <span class="am-stock-status status_title">协议转让</span></li>
+                    </ul>
+
+            </div>
+            <div class="am-block-10"></div>
+            <div class="am-padding-sm">
+                <div id="echatCompanyNum" class="am-stock-echart-box" style="height: 200px" ></div>
+            </div>
+        </div>
+
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-danger icon-Bar-Chart-solid "></i> 三板涨幅榜</h2>
+                <span class="am-fr am-text-xs am-date-text"><i class="am-icon-clock-o"></i> {{marketList.SfList[0].Date}}</span>
+            </div>
+            <div class="am-padding-sm">
+                <div class="am-btn-group am-btn-group-justify am-margin-bottom-sm am-btn-group-stock-red">
+                    <a class="am-btn" ng-class="{'am-btn-danger': !showUpNegotiating, 'am-btn-default': showUpNegotiating}" role="button" ng-click="showUpNegotiating = false">做市</a>
+                    <a class="am-btn" ng-class="{'am-btn-danger': showUpNegotiating, 'am-btn-default': !showUpNegotiating}" role="button" ng-click="showUpNegotiating = true">协议</a>
+                </div>
+                <table class="am-table am-table-striped am-table-centered am-stock-table">
+                    <tbody>
+                    <tr ng-repeat="item in marketList.SfZsList" ng-show="!showUpNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle"><a class="am-badge am-badge-danger am-radius" ng-bind="item.Chg + '%'"></a></td>
+                    </tr>
+                    <tr ng-repeat="item in marketList.SfXyList" ng-show="showUpNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle"><a class="am-badge am-badge-danger am-radius" ng-bind="item.Chg + '%'"></a></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+                <a href="stock-ranklist.html?type=1&sort=0&order=0" class="am-btn am-btn-default am-btn-block an-btn-noline">查看更多</a>
+            </div>
+        </div>
+
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-success icon-Bar-Chart-solid "></i> 三板跌幅榜</h2>
+                <span class="am-fr am-text-xs am-date-text"><i class="am-icon-clock-o"></i> {{marketList.DfList[0].Date}}</span>
+            </div>
+            <div class="am-padding-sm">
+                <div class="am-btn-group am-btn-group-justify am-margin-bottom-sm am-btn-group-stock-green">
+                    <a class="am-btn" ng-class="{'am-btn-success': !showDownNegotiating, 'am-btn-default': showDownNegotiating}" role="button" ng-click="showDownNegotiating = false">做市</a>
+                    <a class="am-btn" ng-class="{'am-btn-success': showDownNegotiating, 'am-btn-default': !showDownNegotiating}" role="button" ng-click="showDownNegotiating = true">协议</a>
+                </div>
+                <table class="am-table am-table-striped am-table-centered am-stock-table">
+                    <tbody>
+                    <tr ng-repeat="item in marketList.DfZsList" ng-show="!showDownNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle"><a class="am-badge am-badge-success am-radius" ng-bind="item.Chg + '%'"></a></td>
+                    </tr>
+                    <tr ng-repeat="item in marketList.DfXyList" ng-show="showDownNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle"><a class="am-badge am-badge-success am-radius" ng-bind="item.Chg + '%'"></a></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <a href="stock-ranklist.html?type=1&sort=0&order=1" class="am-btn am-btn-default am-btn-block an-btn-noline">查看更多</a>
+            </div>
+        </div>
+
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-secondary icon-rank-solid "></i> 成交量排行</h2>
+                <span class="am-fr am-text-xs am-date-text"><i class="am-icon-clock-o"></i> {{marketList.CjlList[0].Date}}</span>
+            </div>
+            <div class="am-padding-sm">
+                <div class="am-btn-group am-btn-group-justify am-margin-bottom-sm am-btn-group-stock-secondary">
+                    <a class="am-btn" ng-class="{'am-btn-secondary': !showVolumnNegotiating, 'am-btn-default': showVolumnNegotiating}" role="button" ng-click="showVolumnNegotiating = false">做市</a>
+                    <a class="am-btn" ng-class="{'am-btn-secondary': showVolumnNegotiating, 'am-btn-default': !showVolumnNegotiating}" role="button" ng-click="showVolumnNegotiating = true">协议</a>
+                </div>
+                <table class="am-table am-table-striped am-table-centered am-stock-table">
+                    <tbody>
+                    <tr ng-repeat="item in marketList.CjlZsList" ng-show="!showVolumnNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle" ng-bind="item.Volumn"></td>
+                    </tr>
+                    <tr ng-repeat="item in marketList.CjlXyList" ng-show="showVolumnNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle" ng-bind="item.Volumn"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <a href="stock-ranklist.html?type=1&sort=2&order=0" class="am-btn am-btn-default am-btn-block an-btn-noline">查看更多</a>
+            </div>
+        </div>
+
+        <div class="am-block-10"></div>
+        <div class=" am-stock-status-box">
+            <div class="am-list-box-hd ">
+                <h2 class="am-fl"><i class="am-iconn-block am-secondary icon-rank-solid "></i> 成交额排行</h2>
+                <span class="am-fr am-text-xs am-date-text"><i class="am-icon-clock-o"></i> {{marketList.CjeList[0].Date}}</span>
+            </div>
+            <div class="am-padding-sm">
+                <div class="am-btn-group am-btn-group-justify am-margin-bottom-sm am-btn-group-stock-secondary">
+                    <a class="am-btn" ng-class="{'am-btn-secondary': !showAmountNegotiating, 'am-btn-default': showAmountNegotiating}" role="button" ng-click="showAmountNegotiating = false">做市</a>
+                    <a class="am-btn" ng-class="{'am-btn-secondary': showAmountNegotiating, 'am-btn-default': !showAmountNegotiating}" role="button" ng-click="showAmountNegotiating = true">协议</a>
+                </div>
+                <table class="am-table am-table-striped am-table-centered am-stock-table">
+                    <tbody>
+                    <tr ng-repeat="item in marketList.CjeZsList" ng-show="!showAmountNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle" ng-bind="item.Amount"></td>
+                    </tr>
+                    <tr ng-repeat="item in marketList.CjeXyList" ng-show="showAmountNegotiating">
+                        <td>{{item.Securityshortname}}<em class="stock-code" ng-bind="item.Code"></em></td>
+                        <td class="am-text-middle" ng-bind="item.New"></td>
+                        <td class="am-text-middle" ng-bind="item.Amount"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="stock-ranklist.html?type=1&sort=1&order=0" class="am-btn am-btn-default am-btn-block an-btn-noline">查看更多</a>
+            </div>
+        </div>
+        <div class="am-block-60"></div>
+
+    </div>
+       <!--  底部导航  -->
+    <div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default "
+         id="">
+        <ul class="am-navbar-nav am-cf am-avg-sm-5 am-navbar-nav-xsber" >
+            <li class="">
+                <a href="dynamic.html" class="">
+                   <i class="icon-navNews-line"></i>
+                  <!--   <i class="icon-navNews-solid"></i> -->
+                    <span class="am-navbar-label">资讯</span>
+                </a>
+            </li>
+            <li class="am-active">
+                <a href="stock.html" class="">
+                  <!--   <i class="icon-navStock-line"></i> -->
+                    <i class="icon-navStock-solid"></i>
+                    <span class="am-navbar-label">选股</span>
+                </a>
+            </li>
+            <li class="am-nav-rongzi">
+                <a href="crowdfunding-list.html" class="">
+                    <img src="/Public/wzwh/zixun/img/xs-icon-rz-l.png" alt="融资"/>
+                    <!--  <img src="/Public/wzwh/zixun/img/xs-icon-rz-s.png" alt="融资"/> -->
+                </a>
+            </li>
+            <li >
+                <a href="activity-meet-list.html" class="">
+                   <i class="icon-navMeeting-line"></i>
+                    <!--<i class="icon-navMeeting-solid"></i>-->
+                    <span class="am-navbar-label">活动</span>
+                </a>
+            </li>
+            <li >
+                <a href="users-mycenter.html" class="">
+                   <i class="icon-navUser-line"></i>
+                    <!--<i class="icon-navUser-solid"></i>-->
+                    <span class="am-navbar-label">我的</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+<!--  / 底部导航  -->
+
+</div>
+</body>
+
+<script type="text/javascript" src="/Public/wzwh/zixun/js/angular.min.js"></script>
+
+<script type="text/javascript">
+    var app = angular.module("myapp", []);
+    app.filter('uniqueCurrency', function ($sce) {
+        return function (input,type) {
+            var max = input;
+            if (max != null) {
+                var unit = '';
+                if (max / 10000 > 10000) {
+                    max = max / 100000000;
+                    unit = '(亿)';
+                } else if (max / 10000 > 100){
+                    max = max / 1000000;
+                    unit = '(百万)';
+                } else if (max / 10000 > 1){
+                    max = max / 10000;
+                    unit = '(万)';
+                }
+                var output ='<span class="am-stock-status status_title">' + type + unit +  '</span><span class="am-stock-status status_text">' + max.toFixed(2) + '</span>';
+                return $sce.trustAsHtml(output);
+            } else {
+                return '';
+            }
+        }
+    });
+    app.controller("marketCenterCtrl",
+            function ($scope, $http) {
+                $scope.getData = function() {
+                    $http.get('/rest/market/neeqIndexes')
+                            .success(function(response) {
+                                console.log(response);
+                                var data = response.Data;
+                                $scope.neeqIndexes = data[0];
+                            });
+                    $http.get('/rest/market/marketList')
+                            .success(function(response) {
+                                console.log(response);
+                                var data = response.Data;
+                                $scope.marketList = data[0];
+                            });
+                };
+                $scope.getData();
+            }
+    );
+</script>
+
+
+<script type="text/javascript" src="/Public/wzwh/zixun/js/jquery.min.js"></script>
+<script type="text/javascript" src="/Public/wzwh/zixun/js/echarts.common.min.js"></script>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script type="text/javascript" >
+    $.ajax({
+        type: 'POST',
+        url: '/rest/wx/jssdk/params',
+        data: {url:window.location.href},
+        dataType: 'json',
+        success: function (response) {
+//            console.log(response);
+            wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: 'wx6252cd1ce5948a03', // 必填，公众号的唯一标识
+                timestamp: response.timestamp, // 必填，生成签名的时间戳
+                nonceStr: response.nonceStr, // 必填，生成签名的随机串
+                signature: response.signature,// 必填，签名，见附录1
+                jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+            });
+            wx.ready(function () {
+                // 在这里调用 API
+                wx.onMenuShareTimeline({
+                    title: '掘金三板 ' + document.title, // 分享标题
+                    link: window.location.href, // 分享链接
+                    imgUrl: 'http://m.xsber.com/resources/assets/img/share.png', // 分享图标
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        console.log("分享朋友圈成功")
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                        console.log("分享朋友圈失败")
+                    }
+                });
+                wx.onMenuShareAppMessage({
+                    title: '掘金三板 ' + document.title, // 分享标题
+                    desc: '新三板的投融资者都在这里，赶快关注吧！', // 分享描述
+                    link: window.location.href, // 分享链接
+                    imgUrl: 'http://m.xsber.com/resources/assets/img/share.png', // 分享图标
+                    type: '', // 分享类型,music、video或link，不填默认为link
+                    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        console.log("分享好友成功")
+                    },
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                        console.log("分享好友失败")
+                    }
+                });
+            });
+        },
+        error: function (response) {
+            console.log(response);
+            alert('加载分享错误,请刷新页面');
+        }
+    });
+</script>
+
+<!--成分Echatts-->
+<script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var echatBoxSzcf = echarts.init(document.getElementById('echatBoxSzcf'));
+        $.get('/rest/market/neeq/899001').done(function(response) {
+            var data = JSON.parse(response);
+//            console.log(data);
+            // myChart.showLoading();
+            // 使用刚指定的配置项和数据显示图表。
+                echatBoxSzcf.setOption({
+                    animation:false,
+                    color:['#F39C12', '#FF4E50', '#F9D423', '#3FB8AF', '#7FC7AF', '#7AB317', '#61a0a8', '#bda29a', '#44525d', '#c4ccd3'],
+                    textStyle:{
+                    fontSize:10,
+                    fontWeight:'lighter'
+                },
+                // 指定图表的配置项和数据
+                tooltip : {
+                    trigger: 'axis',
+                    formatter: function (params) {
+                        var date = new Date(params[0].name);
+                        var formartDate = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日";
+                        return formartDate + '<br/>' + params[0].seriesName + ': ' + params[0].value + '亿<br />' + params[1].seriesName + ': ' + params[1].value + '';
+                    }
+                },
+                toolbox: {
+                    show : false
+                },
+                calculable : true,
+    
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : data.DateLine,
+                        axisLabel : {
+                            formatter: function (value, index) {
+                                // 格式化成月/日，只在第一个刻度显示年份
+                                var date = new Date(value);
+                                var texts = [(date.getMonth() + 1), date.getDate()];
+                                if (date.getMonth() === 0) {
+                                    texts.unshift(date.getFullYear());
+                                }
+                                return texts.join('/');
+                            }
+                        },axisLine:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                    },
+                        axisTick:{
+                            lineStyle:{
+                                color:'#ccc'
+                            }
+                        },
+                        splitLine:{
+                            show:true,
+                            lineStyle:{
+                                color:'#f4f4f4',
+                                type:'dashed'
+                            }
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        name : '成交额',
+                        min: 0,
+                        max: 20,
+                        interval: 5,
+                        splitLine:{
+                            lineStyle:{
+                                color:'#f4f4f4',
+                                type:'dashed'
+                            }
+
+                        },axisLine:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                    },
+                        axisTick:{
+                            lineStyle:{
+                                color:'#ccc'
+                            }
+                        },
+                        axisLabel : {
+                            formatter: '{value} 亿'
+                        }
+                    },
+                    {
+                        type : 'value',
+                        name : '指数',
+                        min: 0,
+                        max: 1600,
+                        interval: 400,
+                        axisLabel : {
+                            formatter: '{value} '
+                        },
+                        axisLine:{
+                            lineStyle:{
+                                color:'#ccc'
+                            }
+                        },
+                        axisTick:{
+                            lineStyle:{
+                                color:'#ccc'
+                            }
+                        },
+                        splitLine:{
+//                    interval:'auto',
+                            lineStyle:{
+                                color:'#f4f4f4',
+                                type:'dashed'
+                            }
+                        }
+                    }
+                ],
+                series : [
+                    {
+                        name:'成交额',
+                        type:'bar',
+                        data: data.TvalLine,
+                        itemStyle:{
+                            normal:{
+                                opacity:0.6
+                            }
+                        }
+                    },
+                    {
+                        name:'指数',
+                        type:'line',
+                        yAxisIndex: 1,
+                        data: data.IndexLine,
+                        lineStyle:{
+                            normal:{
+                                width:2,
+                                type:'solid',
+                                opacity:0.7
+                            }
+                        }
+                    }
+                ]
+            });
+        });
+</script>
+
+<!--做市Echatts-->
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var echatBoxMarket = echarts.init(document.getElementById('echatBoxMarket'));
+    $.get('/rest/market/neeq/899002').done(function(response) {
+        var data = JSON.parse(response);
+//            console.log(data);
+        // myChart.showLoading();
+        // 使用刚指定的配置项和数据显示图表。
+        echatBoxMarket.setOption({
+            animation:false,
+            color:['#F39C12', '#FF4E50', '#F9D423', '#3FB8AF', '#7FC7AF', '#7AB317', '#61a0a8', '#bda29a', '#44525d', '#c4ccd3'],
+            textStyle:{
+                fontSize:10,
+                fontWeight:'lighter'
+            },
+            tooltip : {
+                trigger: 'axis',
+                formatter: function (params) {
+//                    console.log(params);
+                    var date = new Date(params[0].name);
+                    var formartDate = date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日";
+                    return formartDate + '<br/>' + params[0].seriesName + ': ' + params[0].value + '亿<br />' + params[1].seriesName + ': ' + params[1].value + '';
+                }
+            },
+            toolbox: {
+                show : false,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+            calculable : true,
+    
+            xAxis : [
+                {
+                    type : 'category',
+                    data : data.DateLine,
+                    boundaryGap:['5%'],
+                    axisLabel : {
+                        formatter: function (value, index) {
+                            // 格式化成月/日，只在第一个刻度显示年份
+                            var date = new Date(value);
+                            var texts = [(date.getMonth() + 1), date.getDate()];
+                            if (date.getMonth() === 0) {
+                                texts.unshift(date.getFullYear());
+                            }
+                            return texts.join('/');
+                        }
+                    },axisLine:{
+                    lineStyle:{
+                        color:'#ccc'
+                    }
+                },
+                    axisTick:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                    },
+                    splitLine:{
+                        show:true,
+                        lineStyle:{
+                            color:'#f4f4f4',
+                            type:'dashed'
+
+                        }
+                    }
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    name : '成交额',
+                    min: 0,
+                    max: 20,
+                    interval: 5,
+                    splitLine:{
+                        lineStyle:{
+                            color:'#f4f4f4',
+                            type:'dashed'
+                        }
+
+                    },axisLine:{
+                    lineStyle:{
+                        color:'#ccc'
+                    }
+                },
+                    axisTick:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                    },
+                    axisLabel : {
+                        formatter: '{value} 亿'
+                    }
+                },
+                {
+                    type : 'value',
+                    name : '指数',
+                    min: 0,
+                    max: 1600,
+                    interval: 400,
+                    axisLabel : {
+                        formatter: '{value} '
+                    },
+                    axisLine:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+
+                    },
+                    axisTick:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                    },
+                    splitLine:{
+//                    interval:'auto',
+                        lineStyle:{
+                            color:'#f4f4f4',
+                            type:'dashed'
+
+                        }
+                    }
+                }
+            ],
+            series : [
+
+                {
+                    name:'成交额',
+                    type:'bar',
+                    data: data.TvalLine,
+                    itemStyle:{
+                        normal:{
+                            opacity:0.6
+                        }
+                    }
+                },
+                {
+                    name:'指数',
+                    type:'line',
+                    yAxisIndex: 1,
+                    data: data.IndexLine,
+                    lineStyle:{
+                        normal:{
+                            width:2,
+                            type:'solid',
+                            opacity:0.7
+                        }
+
+                    }
+                }
+            ]
+        });
+    });
+</script>
+
+<!--公司挂牌数量Echatts-->
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    var echatCompanyNum = echarts.init(document.getElementById('echatCompanyNum'));
+    $.get('/rest/market/listing').done(function(response) {
+        var data = JSON.parse(response);
+        var dataLength = data.DateLine.length;
+        var listingDate = new Date(data.DateLine[dataLength-1]);
+        var texts = [listingDate.getFullYear(), (listingDate.getMonth()+1), listingDate.getDate()];
+        $("#listing-date").append(texts.join('.'));
+        $("#listing-total").text(data.TotalLine[dataLength-1]);
+        $("#listing-make_market").text(data.ZszrLine[dataLength-1]);
+        $("#listing-negotiating_transfer").text(data.XyzrLine[dataLength-1]);
+        // myChart.showLoading();
+        // 使用刚指定的配置项和数据显示图表。
+        // 指定图表的配置项和数据
+        echatCompanyNum.setOption({
+            animation:false,
+            textStyle:{
+                fontSize:10,
+                fontWeight:'lighter'
+            },
+            color:['#FC913A', '#FF4E50', '#F9D423', '#3FB8AF', '#7FC7AF', '#7AB317', '#61a0a8', '#bda29a', '#44525d', '#c4ccd3'],
+            grid: {
+                left: '2%',
+                right: '6%',
+                bottom: '2%',
+                top:'40',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    boundaryGap:true,
+                    data : data.DateLine,
+                    axisLabel : {
+                        formatter: function (value, index) {
+                            // 格式化成月/日，只在第一个刻度显示年份
+                            var date = new Date(value);
+                            var texts = [(date.getMonth() + 1), date.getDate()];
+                            if (date.getMonth() === 0) {
+                                texts.unshift(date.getFullYear());
+                            }
+                            return texts.join('/');
+                        }
+                    },
+                    axisLine:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                
+                    },
+                    axisTick:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'#f4f4f4'
+                        }
+                
+                    }
+            
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value',
+                    splitLine:{
+                        show:false
+                    },
+                    axisLine:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                
+                    },
+                    axisTick:{
+                        lineStyle:{
+                            color:'#ccc'
+                        }
+                
+                    }
+                }
+            ],
+            series : [
+                {
+                    name:'挂牌数',
+                    type:'line',
+                    stack: '数量',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    markPoint : {
+                        data : [
+                            {type : 'max', name: '最大值'}
+                        ]
+                    },
+                    areaStyle: {
+                        normal: {
+                            opacity:0.4
+                        }
+                    },
+                    data: data.TotalLine
+                }
+            ]
+        });
+    });
+</script>
+<!--页面载入-->
+<script type="text/javascript">
+    paceOptions = {
+        ajax: true, // disabled
+        document: true, // disabled
+        eventLag: false, // disabled
+    };
+    Pace.on('done', function(){
+        $('#overflow').fadeOut()
+    });
+</script>
+
+</html>
